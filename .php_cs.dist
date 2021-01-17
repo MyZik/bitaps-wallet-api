@@ -1,0 +1,48 @@
+<?php
+
+$header = <<<HEADER
+Package: PHP Bitaps API
+
+(c) Eldar Gazaliev <eldarqa@gmx.de>
+
+ Link: <https://github.com/MyZik>
+
+For the full copyright and license information, please view the LICENSE file
+that was distributed with this source code.
+HEADER;
+
+$finder = PhpCsFixer\Finder::create()
+                           ->exclude('somedir')
+                           ->notPath('src/Symfony/Component/Translation/Tests/fixtures/resources.php')
+                           ->in(['src', 'tests']);
+
+$config = new PhpCsFixer\Config();
+
+return $config->setRules(
+    [
+        '@PSR2' => true,
+        'strict_param' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'list_syntax' => ['syntax' => 'short'],
+        'compact_nullable_typehint' => true,
+        'logical_operators' => true,
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'blank_line_before_statement' => [
+            'statements' => [
+                'break',
+                'continue',
+                'return',
+                'throw',
+            ]
+        ],
+
+        'header_comment' => [
+            'header' => $header,
+            'commentType' => 'comment',
+            'separate' => 'both',
+        ],
+        'void_return' => false,
+    ]
+)
+              ->setFinder($finder);
