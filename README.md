@@ -30,7 +30,7 @@ https://developer.bitaps.com/wallet#API_endpoint
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 
 $api = new WalletAPI($endpoint);
 $create = $api->createWallet(); 
@@ -44,7 +44,7 @@ $create = $api->createWallet();
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 
@@ -59,7 +59,7 @@ $address = $api->addAddress();
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 
@@ -101,7 +101,7 @@ $payment = $api->addPayment($receiverAddress, $receiverAmount)
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 
@@ -117,7 +117,7 @@ $state = $api->getWalletState();
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 
@@ -134,7 +134,7 @@ $transactions = $api->getTransactions();
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 
@@ -153,7 +153,7 @@ $addresses = $api->getAddresses();
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 
@@ -171,7 +171,7 @@ $transactions = $api->getAddressTransactions($address);
 ```php
 // use Bitaps\WalletAPI\WalletAPI;
 
-$endpoint = "https://api.bitaps.com/btc/testnet/v1/";
+$endpoint = "https://api.bitaps.com/btc/testnet/v1";
 $walletId = "your wallet ID";
 $password = "your password (if requires)"; 
 

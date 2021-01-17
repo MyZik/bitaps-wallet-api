@@ -88,7 +88,7 @@ class WalletAPI
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    private function call(string $path, string $method, array $headers = [], array $body = [])
+    private function call(string $path, string $method, array $headers = [], array $body = []): string
     {
         $client   = HttpClient::create();
         $fullPath = sprintf('%s%s', $this->endpoint, $path);
