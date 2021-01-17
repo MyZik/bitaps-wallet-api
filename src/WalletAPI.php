@@ -325,6 +325,20 @@ class WalletAPI
         return AddressTransactionsResponse::fromJson($response);
     }
 
+    /**
+     * @param int|null $from
+     * @param int|null $to
+     * @param int|null $limit
+     * @param int|null $page
+     *
+     * @return WalletDailyStatisticsResponse
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
     public function getDailyStatistics(
         int $from = null,
         int $to = null,
