@@ -20,6 +20,7 @@ use Bitaps\WalletAPI\Request\CreateWalletAddressRequest;
 use Bitaps\WalletAPI\Request\CreateWalletRequest;
 use Bitaps\WalletAPI\Request\AddressesRequest;
 use Bitaps\WalletAPI\Request\AddressTransactionsRequest;
+use Bitaps\WalletAPI\Request\PreAuthorizePaymentRequest;
 use Bitaps\WalletAPI\Request\SendPaymentRequest;
 use Bitaps\WalletAPI\Request\WalletDailyStatisticsRequest;
 use Bitaps\WalletAPI\Request\WalletStateRequest;
@@ -28,6 +29,7 @@ use Bitaps\WalletAPI\Response\CreateWallet\CreateWalletResponse;
 use Bitaps\WalletAPI\Response\Addresses\GetAddressesResponse;
 use Bitaps\WalletAPI\Response\CreateWalletAddress\CreateWalletAddressResponse;
 use Bitaps\WalletAPI\Response\AddressTransactions\AddressTransactionsResponse;
+use Bitaps\WalletAPI\Response\PreAuthorizePayment\PreAuthorizePaymentResponse;
 use Bitaps\WalletAPI\Response\SendPayment\SendPaymentResponse;
 use Bitaps\WalletAPI\Response\WalletDailyStatistics\WalletDailyStatisticsResponse;
 use Bitaps\WalletAPI\Response\WalletState\WalletStateResponse;
@@ -176,14 +178,33 @@ class WalletAPI
      *
      * @return $this
      */
-    public function &addPayment(string $address, int $amount): WalletAPI
+    public function addPayment(string $address, int $amount): WalletAPI
     {
         $this->receiversList[] = [
             'address' => $address,
-            'amount' => $amount
+            'amount'  => $amount
         ];
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function preAuthorizePayment(): PreAuthorizePaymentResponse
+    {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new PreAuthorizePaymentRequest($this->walletId, $this->receiversList, $nonce, $signature);
+
+        $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
+
+        return PreAuthorizePaymentResponse::fromJson($response);
     }
 
     /**
