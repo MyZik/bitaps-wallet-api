@@ -1,19 +1,18 @@
 <?php
-
-declare(strict_types=1);
-
 /*
  * Package: PHP Bitaps API
  *
  * (c) Eldar Gazaliev <eldarqa@gmx.de>
  *
- *  Link: <https://github.com/MyZik>
+ * Link: <https://github.com/MyZik>
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
  */
 
-namespace Bitaps\WalletAPI\Response\SendPayment\Model;
+declare(strict_types=1);
+
+namespace Bitaps\WalletAPI\Model;
 
 class Receiver
 {
@@ -28,19 +27,14 @@ class Receiver
     private string $txHash;
 
     /**
-     * @var int|null
+     * @var int
      */
-    private ?int $out;
+    private int $out;
 
     /**
      * @var int
      */
     private int $amount;
-
-    /**
-     * @var string|null
-     */
-    private ?string $type;
 
     /**
      * @return string
@@ -59,9 +53,9 @@ class Receiver
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getOut(): ?int
+    public function getOut(): int
     {
         return $this->out;
     }
@@ -72,13 +66,5 @@ class Receiver
     public function getAmount(): int
     {
         return $this->amount;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getType(): ?string
-    {
-        return $this->type;
     }
 }

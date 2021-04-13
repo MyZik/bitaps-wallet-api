@@ -21,6 +21,7 @@ use Bitaps\WalletAPI\Request\CreateWalletRequest;
 use Bitaps\WalletAPI\Request\AddressesRequest;
 use Bitaps\WalletAPI\Request\AddressTransactionsRequest;
 use Bitaps\WalletAPI\Request\PreAuthorizePaymentRequest;
+use Bitaps\WalletAPI\Request\SendAllAvailableBalanceRequest;
 use Bitaps\WalletAPI\Request\SendPaymentRequest;
 use Bitaps\WalletAPI\Request\WalletDailyStatisticsRequest;
 use Bitaps\WalletAPI\Request\WalletStateRequest;
@@ -30,6 +31,7 @@ use Bitaps\WalletAPI\Response\Addresses\GetAddressesResponse;
 use Bitaps\WalletAPI\Response\CreateWalletAddress\CreateWalletAddressResponse;
 use Bitaps\WalletAPI\Response\AddressTransactions\AddressTransactionsResponse;
 use Bitaps\WalletAPI\Response\PreAuthorizePayment\PreAuthorizePaymentResponse;
+use Bitaps\WalletAPI\Response\SendAllAvailableBalance\SendAllAvailableBalanceResponse;
 use Bitaps\WalletAPI\Response\SendPayment\SendPaymentResponse;
 use Bitaps\WalletAPI\Response\WalletDailyStatistics\WalletDailyStatisticsResponse;
 use Bitaps\WalletAPI\Response\WalletState\WalletStateResponse;
@@ -225,6 +227,27 @@ class WalletAPI
         $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
 
         return SendPaymentResponse::fromJson($response);
+    }
+
+    /**
+     * @param string $address
+     *
+     * @return SendAllAvailableBalanceResponse
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function sendAllAvailableBalance(string $address): SendAllAvailableBalanceResponse
+    {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new SendAllAvailableBalanceRequest($this->walletId, $address, $nonce, $signature);
+
+        $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
+
+        return SendAllAvailableBalanceResponse::fromJson($response);
     }
 
     /**
