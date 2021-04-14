@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * Package: PHP Bitaps API
  *
  * (c) Eldar Gazaliev <eldarqa@gmx.de>
@@ -35,14 +36,14 @@ class PreAuthorizePaymentRequest implements RequestInterface
      *
      * @var float|null
      */
-    public ?float $nonce;
+    private ?float $nonce;
 
     /**
      * HMAC signature
      *
      * @var string|null
      */
-    public ?string $signature;
+    private ?string $signature;
 
     /**
      * @param string      $walletId
@@ -58,11 +59,17 @@ class PreAuthorizePaymentRequest implements RequestInterface
         $this->signature     = $signature;
     }
 
+    /**
+     * @return string
+     */
     public function getPathParams(): string
     {
         return sprintf('/wallet/send/payment/preauthorize/%s', $this->walletId);
     }
 
+    /**
+     * @return array
+     */
     public function getHeaders(): array
     {
         return [
@@ -71,6 +78,9 @@ class PreAuthorizePaymentRequest implements RequestInterface
         ];
     }
 
+    /**
+     * @return array[]
+     */
     public function getBody(): array
     {
         return [

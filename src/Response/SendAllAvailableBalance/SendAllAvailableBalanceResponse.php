@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * Package: PHP Bitaps API
  *
  * (c) Eldar Gazaliev <eldarqa@gmx.de>

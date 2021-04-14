@@ -5,7 +5,7 @@ Package: PHP Bitaps API
 
 (c) Eldar Gazaliev <eldarqa@gmx.de>
 
- Link: <https://github.com/MyZik>
+Link: <https://github.com/MyZik>
 
 For the full copyright and license information, please view the LICENSE file
 that was distributed with this source code.
@@ -39,8 +39,9 @@ return $config->setRules(
 
         'header_comment' => [
             'header' => $header,
-            'commentType' => 'comment',
+            'commentType' => 'PHPDoc',
             'separate' => 'both',
+            'location' => 'after_open'
         ],
         'void_return' => false,
     ]

@@ -1,17 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
-/*
+/**
  * Package: PHP Bitaps API
  *
  * (c) Eldar Gazaliev <eldarqa@gmx.de>
  *
- *  Link: <https://github.com/MyZik>
+ * Link: <https://github.com/MyZik>
  *
  * For the full copyright and license information, please view the LICENSE file
  * that was distributed with this source code.
  */
+
+declare(strict_types=1);
 
 namespace Bitaps\WalletAPI;
 
@@ -22,6 +22,7 @@ use Bitaps\WalletAPI\Request\AddressesRequest;
 use Bitaps\WalletAPI\Request\AddressTransactionsRequest;
 use Bitaps\WalletAPI\Request\PreAuthorizePaymentRequest;
 use Bitaps\WalletAPI\Request\SendAllAvailableBalanceRequest;
+use Bitaps\WalletAPI\Request\SendCommitmentPaymentRequest;
 use Bitaps\WalletAPI\Request\SendPaymentRequest;
 use Bitaps\WalletAPI\Request\WalletDailyStatisticsRequest;
 use Bitaps\WalletAPI\Request\WalletStateRequest;
@@ -32,6 +33,7 @@ use Bitaps\WalletAPI\Response\CreateWalletAddress\CreateWalletAddressResponse;
 use Bitaps\WalletAPI\Response\AddressTransactions\AddressTransactionsResponse;
 use Bitaps\WalletAPI\Response\PreAuthorizePayment\PreAuthorizePaymentResponse;
 use Bitaps\WalletAPI\Response\SendAllAvailableBalance\SendAllAvailableBalanceResponse;
+use Bitaps\WalletAPI\Response\SendCommitmentPayment\SendCommitmentPaymentResponse;
 use Bitaps\WalletAPI\Response\SendPayment\SendPaymentResponse;
 use Bitaps\WalletAPI\Response\WalletDailyStatistics\WalletDailyStatisticsResponse;
 use Bitaps\WalletAPI\Response\WalletState\WalletStateResponse;
@@ -248,6 +250,28 @@ class WalletAPI
         $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
 
         return SendAllAvailableBalanceResponse::fromJson($response);
+    }
+
+    /**
+     * @param string $address
+     * @param int    $amount
+     *
+     * @return mixed
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function sendCommitmentPayment(string $address, int $amount): SendCommitmentPaymentResponse
+    {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new SendCommitmentPaymentRequest($this->walletId, $address, $amount, $nonce, $signature);
+
+        $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
+
+        return SendCommitmentPaymentResponse::fromJson($response);
     }
 
     /**

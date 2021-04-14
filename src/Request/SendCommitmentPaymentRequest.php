@@ -15,7 +15,7 @@ declare(strict_types=1);
 
 namespace Bitaps\WalletAPI\Request;
 
-class SendAllAvailableBalanceRequest implements RequestInterface
+class SendCommitmentPaymentRequest implements RequestInterface
 {
     /**
      * Wallet ID
@@ -25,11 +25,18 @@ class SendAllAvailableBalanceRequest implements RequestInterface
     private string $walletId;
 
     /**
-     * Receiver address
+     * Address
      *
      * @var string
      */
     private string $address;
+
+    /**
+     * Amount in satoshi
+     *
+     * @var int
+     */
+    private int $amount;
 
     /**
      * Nonce used for HMAC signature
@@ -48,13 +55,15 @@ class SendAllAvailableBalanceRequest implements RequestInterface
     /**
      * @param string      $walletId
      * @param string      $address
+     * @param int         $amount
      * @param float|null  $nonce
      * @param string|null $signature
      */
-    public function __construct(string $walletId, string $address, float $nonce = null, string $signature = null)
+    public function __construct(string $walletId, string $address, int $amount, ?float $nonce, ?string $signature)
     {
         $this->walletId  = $walletId;
         $this->address   = $address;
+        $this->amount    = $amount;
         $this->nonce     = $nonce;
         $this->signature = $signature;
     }
@@ -64,7 +73,7 @@ class SendAllAvailableBalanceRequest implements RequestInterface
      */
     public function getPathParams(): string
     {
-        return sprintf('/wallet/send/all/balance/%s', $this->walletId);
+        return sprintf('/wallet/send/payment/with/commitment/%s', $this->walletId);
     }
 
     /**
@@ -79,12 +88,15 @@ class SendAllAvailableBalanceRequest implements RequestInterface
     }
 
     /**
-     * @return string[]
+     * @return array[]
      */
     public function getBody(): array
     {
         return [
-            'address' => $this->address,
+            'receiver' => [
+                'address' => $this->address,
+                'amount' => $this->amount
+            ]
         ];
     }
 }

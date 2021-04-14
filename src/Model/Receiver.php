@@ -1,5 +1,6 @@
 <?php
-/*
+
+/**
  * Package: PHP Bitaps API
  *
  * (c) Eldar Gazaliev <eldarqa@gmx.de>
@@ -27,9 +28,9 @@ class Receiver
     private string $txHash;
 
     /**
-     * @var int
+     * @var int|null
      */
-    private int $out;
+    private ?int $out;
 
     /**
      * @var int
@@ -53,9 +54,9 @@ class Receiver
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getOut(): int
+    public function getOut(): ?int
     {
         return $this->out;
     }
