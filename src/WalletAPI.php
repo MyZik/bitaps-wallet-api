@@ -25,6 +25,7 @@ use Bitaps\WalletAPI\Request\SendAllAvailableBalanceRequest;
 use Bitaps\WalletAPI\Request\SendCommitmentPaymentRequest;
 use Bitaps\WalletAPI\Request\SendPaymentRequest;
 use Bitaps\WalletAPI\Request\WalletDailyStatisticsRequest;
+use Bitaps\WalletAPI\Request\WalletPendingTransactionsRequest;
 use Bitaps\WalletAPI\Request\WalletStateRequest;
 use Bitaps\WalletAPI\Request\WalletTransactionsRequest;
 use Bitaps\WalletAPI\Response\CreateWallet\CreateWalletResponse;
@@ -36,6 +37,7 @@ use Bitaps\WalletAPI\Response\SendAllAvailableBalance\SendAllAvailableBalanceRes
 use Bitaps\WalletAPI\Response\SendCommitmentPayment\SendCommitmentPaymentResponse;
 use Bitaps\WalletAPI\Response\SendPayment\SendPaymentResponse;
 use Bitaps\WalletAPI\Response\WalletDailyStatistics\WalletDailyStatisticsResponse;
+use Bitaps\WalletAPI\Response\WalletPendingTransactions\WalletPendingTransactionsResponse;
 use Bitaps\WalletAPI\Response\WalletState\WalletStateResponse;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -322,6 +324,34 @@ class WalletAPI
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
         return AddressTransactionsResponse::fromJson($response);
+    }
+
+    /**
+     * @param int|null $from
+     * @param int|null $to
+     * @param int|null $limit
+     * @param int|null $page
+     *
+     * @return WalletPendingTransactionsResponse
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getPendingTransactions(
+        int $from = null,
+        int $to = null,
+        int $limit = null,
+        int $page = null
+    ): WalletPendingTransactionsResponse {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new WalletPendingTransactionsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
+
+        $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
+
+        return WalletPendingTransactionsResponse::fromJson($response);
     }
 
     /**

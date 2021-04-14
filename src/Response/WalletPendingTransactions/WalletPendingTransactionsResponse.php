@@ -13,20 +13,21 @@
 
 declare(strict_types=1);
 
-namespace Bitaps\WalletAPI\Response\WalletDailyStatistics;
+namespace Bitaps\WalletAPI\Response\WalletPendingTransactions;
 
+use Bitaps\WalletAPI\Model\PendingTransaction;
 use Bitaps\WalletAPI\Response\AbstractResponse;
 use JMS\Serializer\Annotation as Serializer;
 
-class WalletDailyStatisticsResponse extends AbstractResponse
+class WalletPendingTransactionsResponse extends AbstractResponse
 {
     /**
-     * @Serializer\SerializedName("day_list")
-     * @Serializer\Type("array<Bitaps\WalletAPI\Response\WalletDailyStatistics\Model\DailyStatistics>")
+     * @Serializer\SerializedName("tx_list")
+     * @Serializer\Type("array<Bitaps\WalletAPI\Model\PendingTransaction>")
      *
-     * @var array
+     * @var PendingTransaction[]
      */
-    private array $dayList;
+    private array $txList;
 
     /**
      * @Serializer\SerializedName("next_page")
@@ -37,11 +38,11 @@ class WalletDailyStatisticsResponse extends AbstractResponse
     private bool $nextPage;
 
     /**
-     * @return array
+     * @return PendingTransaction[]
      */
-    public function getDayList(): array
+    public function getTxList(): array
     {
-        return $this->dayList;
+        return $this->txList;
     }
 
     /**
