@@ -16,31 +16,31 @@ declare(strict_types=1);
 namespace Bitaps\WalletAPI;
 
 use Bitaps\WalletAPI\Exception\BitapsAPIException;
-use Bitaps\WalletAPI\Request\CreateWalletAddressRequest;
-use Bitaps\WalletAPI\Request\CreateWalletRequest;
-use Bitaps\WalletAPI\Request\AddressesRequest;
-use Bitaps\WalletAPI\Request\AddressTransactionsRequest;
-use Bitaps\WalletAPI\Request\PreAuthorizePaymentRequest;
-use Bitaps\WalletAPI\Request\SendAllAvailableBalanceRequest;
-use Bitaps\WalletAPI\Request\SendCommitmentPaymentRequest;
-use Bitaps\WalletAPI\Request\SendPaymentRequest;
-use Bitaps\WalletAPI\Request\WalletConfirmedTransactionsRequest;
-use Bitaps\WalletAPI\Request\WalletDailyStatisticsRequest;
-use Bitaps\WalletAPI\Request\WalletPendingTransactionsRequest;
-use Bitaps\WalletAPI\Request\WalletStateRequest;
-use Bitaps\WalletAPI\Request\WalletTransactionsRequest;
-use Bitaps\WalletAPI\Response\CreateWallet\CreateWalletResponse;
-use Bitaps\WalletAPI\Response\Addresses\GetAddressesResponse;
-use Bitaps\WalletAPI\Response\CreateWalletAddress\CreateWalletAddressResponse;
-use Bitaps\WalletAPI\Response\AddressTransactions\AddressTransactionsResponse;
-use Bitaps\WalletAPI\Response\PreAuthorizePayment\PreAuthorizePaymentResponse;
-use Bitaps\WalletAPI\Response\SendAllAvailableBalance\SendAllAvailableBalanceResponse;
-use Bitaps\WalletAPI\Response\SendCommitmentPayment\SendCommitmentPaymentResponse;
-use Bitaps\WalletAPI\Response\SendPayment\SendPaymentResponse;
-use Bitaps\WalletAPI\Response\WalletConfirmedTransactions\WalletConfirmedTransactionsResponse;
-use Bitaps\WalletAPI\Response\WalletDailyStatistics\WalletDailyStatisticsResponse;
-use Bitaps\WalletAPI\Response\WalletPendingTransactions\WalletPendingTransactionsResponse;
-use Bitaps\WalletAPI\Response\WalletState\WalletStateResponse;
+use Bitaps\WalletAPI\Request\Addresses\AddressesRequest;
+use Bitaps\WalletAPI\Request\Addresses\AddressTransactionsRequest;
+use Bitaps\WalletAPI\Request\Addresses\CreateAddressRequest;
+use Bitaps\WalletAPI\Request\Payments\PreAuthorizePaymentRequest;
+use Bitaps\WalletAPI\Request\Payments\SendAllBalanceRequest;
+use Bitaps\WalletAPI\Request\Payments\SendCommitmentPaymentRequest;
+use Bitaps\WalletAPI\Request\Payments\SendPaymentRequest;
+use Bitaps\WalletAPI\Request\Transactions\ConfirmedTransactionsRequest;
+use Bitaps\WalletAPI\Request\Transactions\PendingTransactionsRequest;
+use Bitaps\WalletAPI\Request\Transactions\TransactionsRequest;
+use Bitaps\WalletAPI\Request\Wallet\CreateWalletRequest;
+use Bitaps\WalletAPI\Request\Wallet\DailyStatisticsRequest;
+use Bitaps\WalletAPI\Request\Wallet\StateRequest;
+use Bitaps\WalletAPI\Response\Addresses\AddressesResponse;
+use Bitaps\WalletAPI\Response\Addresses\AddressTransactionsResponse;
+use Bitaps\WalletAPI\Response\Addresses\CreateAddressResponse;
+use Bitaps\WalletAPI\Response\Payments\PreAuthorizePaymentResponse;
+use Bitaps\WalletAPI\Response\Payments\SendAllBalanceResponse;
+use Bitaps\WalletAPI\Response\Payments\SendCommitmentPaymentResponse;
+use Bitaps\WalletAPI\Response\Payments\SendPaymentResponse;
+use Bitaps\WalletAPI\Response\Transactions\ConfirmedTransactionsResponse;
+use Bitaps\WalletAPI\Response\Transactions\PendingTransactionsResponse;
+use Bitaps\WalletAPI\Response\Wallet\CreateWalletResponse;
+use Bitaps\WalletAPI\Response\Wallet\DailyStatisticsResponse;
+use Bitaps\WalletAPI\Response\Wallet\StateResponse;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
@@ -147,7 +147,6 @@ class WalletAPI
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
     public function createWallet(string $callbackLink = null, string $password = null): CreateWalletResponse
     {
@@ -160,24 +159,23 @@ class WalletAPI
 
     /**
      * @param string|null $callbackLink
-     * @param int         $confirmations
+     * @param int|null    $confirmations
      *
-     * @return CreateWalletAddressResponse
+     * @return CreateAddressResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
-    public function addAddress(string $callbackLink = null, int $confirmations = 3): CreateWalletAddressResponse
+    public function addAddress(string $callbackLink = null, ?int $confirmations = 3): CreateAddressResponse
     {
-        $request = new CreateWalletAddressRequest($this->walletId, $callbackLink, $confirmations);
+        $request = new CreateAddressRequest($this->walletId, $callbackLink, $confirmations);
 
         $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
 
-        return CreateWalletAddressResponse::fromJson($response);
+        return CreateAddressResponse::fromJson($response);
     }
 
     /**
@@ -197,7 +195,7 @@ class WalletAPI
     }
 
     /**
-     * @return mixed
+     * @return PreAuthorizePaymentResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -238,7 +236,7 @@ class WalletAPI
     /**
      * @param string $address
      *
-     * @return SendAllAvailableBalanceResponse
+     * @return SendAllBalanceResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -246,21 +244,21 @@ class WalletAPI
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
      */
-    public function sendAllAvailableBalance(string $address): SendAllAvailableBalanceResponse
+    public function sendAllAvailableBalance(string $address): SendAllBalanceResponse
     {
         [$nonce, $signature] = $this->getAccess();
-        $request = new SendAllAvailableBalanceRequest($this->walletId, $address, $nonce, $signature);
+        $request = new SendAllBalanceRequest($this->walletId, $address, $nonce, $signature);
 
         $response = $this->call($request->getPathParams(), 'POST', $request->getHeaders(), $request->getBody());
 
-        return SendAllAvailableBalanceResponse::fromJson($response);
+        return SendAllBalanceResponse::fromJson($response);
     }
 
     /**
      * @param string $address
      * @param int    $amount
      *
-     * @return mixed
+     * @return SendCommitmentPaymentResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -279,7 +277,7 @@ class WalletAPI
     }
 
     /**
-     * @return WalletStateResponse
+     * @return StateResponse
      *
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
@@ -289,14 +287,14 @@ class WalletAPI
      * @throws TransportExceptionInterface
      * @throws \JsonException
      */
-    public function getWalletState(): WalletStateResponse
+    public function getWalletState(): StateResponse
     {
         [$nonce, $signature] = $this->getAccess();
-        $request = new WalletStateRequest($this->walletId, $nonce, $signature);
+        $request = new StateRequest($this->walletId, $nonce, $signature);
 
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
-        return WalletStateResponse::fromJson($response);
+        return StateResponse::fromJson($response);
     }
 
     /**
@@ -312,7 +310,6 @@ class WalletAPI
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
     public function getTransactions(
         int $from = null,
@@ -321,7 +318,7 @@ class WalletAPI
         int $page = null
     ): AddressTransactionsResponse {
         [$nonce, $signature] = $this->getAccess();
-        $request = new WalletTransactionsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
+        $request = new TransactionsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
 
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
@@ -334,7 +331,7 @@ class WalletAPI
      * @param int|null $limit
      * @param int|null $page
      *
-     * @return WalletPendingTransactionsResponse
+     * @return PendingTransactionsResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -347,35 +344,13 @@ class WalletAPI
         int $to = null,
         int $limit = null,
         int $page = null
-    ): WalletPendingTransactionsResponse {
+    ): PendingTransactionsResponse {
         [$nonce, $signature] = $this->getAccess();
-        $request = new WalletPendingTransactionsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
+        $request = new PendingTransactionsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
 
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
-        return WalletPendingTransactionsResponse::fromJson($response);
-    }
-
-    public function getConfirmedTransactions(
-        int $from = null,
-        int $to = null,
-        int $limit = null,
-        int $page = null
-    ): WalletConfirmedTransactionsResponse {
-        [$nonce, $signature] = $this->getAccess();
-        $request = new WalletConfirmedTransactionsRequest(
-            $this->walletId,
-            $nonce,
-            $signature,
-            $from,
-            $to,
-            $limit,
-            $page
-        );
-
-        $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
-
-        return WalletConfirmedTransactionsResponse::fromJson($response);
+        return PendingTransactionsResponse::fromJson($response);
     }
 
     /**
@@ -384,7 +359,35 @@ class WalletAPI
      * @param int|null $limit
      * @param int|null $page
      *
-     * @return GetAddressesResponse
+     * @return ConfirmedTransactionsResponse
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getConfirmedTransactions(
+        int $from = null,
+        int $to = null,
+        int $limit = null,
+        int $page = null
+    ): ConfirmedTransactionsResponse {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new ConfirmedTransactionsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
+
+        $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
+
+        return ConfirmedTransactionsResponse::fromJson($response);
+    }
+
+    /**
+     * @param int|null $from
+     * @param int|null $to
+     * @param int|null $limit
+     * @param int|null $page
+     *
+     * @return AddressesResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -398,13 +401,13 @@ class WalletAPI
         int $to = null,
         int $limit = null,
         int $page = null
-    ): GetAddressesResponse {
+    ): AddressesResponse {
         [$nonce, $signature] = $this->getAccess();
         $request = new AddressesRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
 
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
-        return GetAddressesResponse::fromJson($response);
+        return AddressesResponse::fromJson($response);
     }
 
     /**
@@ -453,7 +456,7 @@ class WalletAPI
      * @param int|null $limit
      * @param int|null $page
      *
-     * @return WalletDailyStatisticsResponse
+     * @return DailyStatisticsResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
      * @throws DecodingExceptionInterface
@@ -466,12 +469,12 @@ class WalletAPI
         int $to = null,
         int $limit = null,
         int $page = null
-    ): WalletDailyStatisticsResponse {
+    ): DailyStatisticsResponse {
         [$nonce, $signature] = $this->getAccess();
-        $request = new WalletDailyStatisticsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
+        $request = new DailyStatisticsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
 
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
-        return WalletDailyStatisticsResponse::fromJson($response);
+        return DailyStatisticsResponse::fromJson($response);
     }
 }
