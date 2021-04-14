@@ -24,6 +24,7 @@ use Bitaps\WalletAPI\Request\PreAuthorizePaymentRequest;
 use Bitaps\WalletAPI\Request\SendAllAvailableBalanceRequest;
 use Bitaps\WalletAPI\Request\SendCommitmentPaymentRequest;
 use Bitaps\WalletAPI\Request\SendPaymentRequest;
+use Bitaps\WalletAPI\Request\WalletConfirmedTransactionsRequest;
 use Bitaps\WalletAPI\Request\WalletDailyStatisticsRequest;
 use Bitaps\WalletAPI\Request\WalletPendingTransactionsRequest;
 use Bitaps\WalletAPI\Request\WalletStateRequest;
@@ -36,6 +37,7 @@ use Bitaps\WalletAPI\Response\PreAuthorizePayment\PreAuthorizePaymentResponse;
 use Bitaps\WalletAPI\Response\SendAllAvailableBalance\SendAllAvailableBalanceResponse;
 use Bitaps\WalletAPI\Response\SendCommitmentPayment\SendCommitmentPaymentResponse;
 use Bitaps\WalletAPI\Response\SendPayment\SendPaymentResponse;
+use Bitaps\WalletAPI\Response\WalletConfirmedTransactions\WalletConfirmedTransactionsResponse;
 use Bitaps\WalletAPI\Response\WalletDailyStatistics\WalletDailyStatisticsResponse;
 use Bitaps\WalletAPI\Response\WalletPendingTransactions\WalletPendingTransactionsResponse;
 use Bitaps\WalletAPI\Response\WalletState\WalletStateResponse;
@@ -352,6 +354,28 @@ class WalletAPI
         $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
 
         return WalletPendingTransactionsResponse::fromJson($response);
+    }
+
+    public function getConfirmedTransactions(
+        int $from = null,
+        int $to = null,
+        int $limit = null,
+        int $page = null
+    ): WalletConfirmedTransactionsResponse {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new WalletConfirmedTransactionsRequest(
+            $this->walletId,
+            $nonce,
+            $signature,
+            $from,
+            $to,
+            $limit,
+            $page
+        );
+
+        $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
+
+        return WalletConfirmedTransactionsResponse::fromJson($response);
     }
 
     /**
