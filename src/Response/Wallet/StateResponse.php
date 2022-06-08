@@ -125,6 +125,8 @@ class StateResponse extends AbstractResponse
     private int $createDateTimestamp;
 
     /**
+     * Last used Nonсе
+     *
      * @var int|null
      */
     private ?int $lastUsedNonce = null;

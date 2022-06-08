@@ -13,11 +13,11 @@
 
 declare(strict_types=1);
 
-namespace Bitaps\WalletAPI\Request\Transactions;
+namespace Bitaps\WalletAPI\Request\Commitments;
 
 use Bitaps\WalletAPI\Request\RequestInterface;
 
-class TransactionsRequest implements RequestInterface
+class CommitmentsRequest implements RequestInterface
 {
     /**
      * Wallet ID
@@ -101,7 +101,7 @@ class TransactionsRequest implements RequestInterface
     public function getPathParams(): string
     {
         return sprintf(
-            '/wallet/transactions/%s?from=%d&to=%d&limit=%d&page=%d',
+            '/wallet/commitments/%s?from=%d&to=%d&limit=%d&page=%d',
             $this->walletId,
             $this->from,
             $this->to,
@@ -110,20 +110,14 @@ class TransactionsRequest implements RequestInterface
         );
     }
 
-    /**
-     * @return array
-     */
     public function getHeaders(): array
     {
         return [
-            'Access-Nonce' => $this->nonce,
+            'Access-Nonce'     => $this->nonce,
             'Access-Signature' => $this->signature
         ];
     }
 
-    /**
-     * @return array
-     */
     public function getBody(): array
     {
         return [];

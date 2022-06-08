@@ -75,7 +75,7 @@ class SendAllBalanceRequest implements RequestInterface
     public function getHeaders(): array
     {
         return [
-            'Access-Nonce' => $this->nonce,
+            'Access-Nonce'     => $this->nonce,
             'Access-Signature' => $this->signature
         ];
     }

@@ -19,6 +19,7 @@ use Bitaps\WalletAPI\Exception\BitapsAPIException;
 use Bitaps\WalletAPI\Request\Addresses\AddressesRequest;
 use Bitaps\WalletAPI\Request\Addresses\AddressTransactionsRequest;
 use Bitaps\WalletAPI\Request\Addresses\CreateAddressRequest;
+use Bitaps\WalletAPI\Request\Commitments\CommitmentsRequest;
 use Bitaps\WalletAPI\Request\Payments\PreAuthorizePaymentRequest;
 use Bitaps\WalletAPI\Request\Payments\SendAllBalanceRequest;
 use Bitaps\WalletAPI\Request\Payments\SendCommitmentPaymentRequest;
@@ -32,6 +33,7 @@ use Bitaps\WalletAPI\Request\Wallet\StateRequest;
 use Bitaps\WalletAPI\Response\Addresses\AddressesResponse;
 use Bitaps\WalletAPI\Response\Addresses\AddressTransactionsResponse;
 use Bitaps\WalletAPI\Response\Addresses\CreateAddressResponse;
+use Bitaps\WalletAPI\Response\Commitments\CommitmentsResponse;
 use Bitaps\WalletAPI\Response\Payments\PreAuthorizePaymentResponse;
 use Bitaps\WalletAPI\Response\Payments\SendAllBalanceResponse;
 use Bitaps\WalletAPI\Response\Payments\SendCommitmentPaymentResponse;
@@ -221,7 +223,6 @@ class WalletAPI
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
     public function pay(): SendPaymentResponse
     {
@@ -285,7 +286,6 @@ class WalletAPI
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
     public function getWalletState(): StateResponse
     {
@@ -387,6 +387,34 @@ class WalletAPI
      * @param int|null $limit
      * @param int|null $page
      *
+     * @return CommitmentsResponse
+     * @throws BitapsAPIException
+     * @throws ClientExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function getCommitments(
+        int $from = null,
+        int $to = null,
+        int $limit = null,
+        int $page = null
+    ): CommitmentsResponse {
+        [$nonce, $signature] = $this->getAccess();
+        $request = new CommitmentsRequest($this->walletId, $nonce, $signature, $from, $to, $limit, $page);
+
+        $response = $this->call($request->getPathParams(), 'GET', $request->getHeaders(), $request->getBody());
+
+        return CommitmentsResponse::fromJson($response);
+    }
+
+    /**
+     * @param int|null $from
+     * @param int|null $to
+     * @param int|null $limit
+     * @param int|null $page
+     *
      * @return AddressesResponse
      * @throws BitapsAPIException
      * @throws ClientExceptionInterface
@@ -394,7 +422,6 @@ class WalletAPI
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
     public function getAddresses(
         int $from = null,
@@ -424,7 +451,6 @@ class WalletAPI
      * @throws RedirectionExceptionInterface
      * @throws ServerExceptionInterface
      * @throws TransportExceptionInterface
-     * @throws \JsonException
      */
     public function getAddressTransactions(
         string $address,

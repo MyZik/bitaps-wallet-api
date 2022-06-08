@@ -20,9 +20,9 @@ use Bitaps\WalletAPI\Response\AbstractResponse;
 class SendCommitmentPaymentResponse extends AbstractResponse
 {
     /**
-     * @var string
+     * @var string|null
      */
-    private string $commitment;
+    private ?string $commitment;
 
     /**
      * @var int|null
@@ -54,9 +54,9 @@ class SendCommitmentPaymentResponse extends AbstractResponse
     private string $address;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCommitment(): string
+    public function getCommitment(): ?string
     {
         return $this->commitment;
     }
